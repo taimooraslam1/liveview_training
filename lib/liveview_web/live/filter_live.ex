@@ -8,9 +8,9 @@ defmodule LiveviewWeb.FilterLive do
       assign(socket,
         boats: Boats.list_boats(),
         type: "",
-        price: []
+        prices: []
       )
-    {:ok, socket}
+    {:ok, socket, temporary_assign: [boats: []]}
   end
 
   def render(assigns) do
@@ -22,6 +22,12 @@ defmodule LiveviewWeb.FilterLive do
           <select name="type">
             <%= options_for_select(type_options(), @type) %>
           </select>
+          <div class="prices">
+            <input type="hidden" name="prices[]" value="" />
+            <%= for price <- ["$","$$","$$$"] do %>
+              <%= price_checkbox(price: price, checked: price in @prices) %>
+            <% end %>
+          </div>
         </div>
       </form>
       <div class="boats">
@@ -43,9 +49,10 @@ defmodule LiveviewWeb.FilterLive do
     """
   end
 
-  def handle_event("filter", %{"type" => type}, socket) do
-    boats = Boats.list_boats(type: type)
-    socket = assign(socket, boats: boats, type: type)
+  def handle_event("filter", %{"type" => type, "prices" => prices}, socket) do
+    params = [type: type, prices: prices]
+    boats = Boats.list_boats(params)
+    socket = assign(socket, params ++ [boats: boats])
     {:noreply, socket}
   end
 
@@ -56,6 +63,15 @@ defmodule LiveviewWeb.FilterLive do
       Sporting: "sporting",
       Sailing: "sailing",
     ]
+  end
+
+  defp price_checkbox(assigns) do
+    assigns = Enum.into(assigns, %{})
+    ~L"""
+      <input type="checkbox" id="<%= @price %>" name="prices[]" value="<%= @price %>"
+                    <%= if @checked, do: "checked" %> />
+      <label for="<%= @price %>"><%= @price %></label>
+    """
   end
 
 end
