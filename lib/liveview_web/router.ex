@@ -24,6 +24,7 @@ defmodule LiveviewWeb.Router do
     live "/sale-dashboard", SalesDashboardLive
     live "/search", SearchLive
     live "/auto-complete", AutoComplete
+    live "/filter-boats", FilterLive
   end
 
   # Other scopes may use custom stacks.
