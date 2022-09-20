@@ -10,7 +10,7 @@ defmodule LiveviewWeb.FilterLive do
         type: "",
         prices: []
       )
-    {:ok, socket, temporary_assign: [boats: []]}
+    {:ok, socket, temporary_assigns: [boats: []]}
   end
 
   def render(assigns) do
